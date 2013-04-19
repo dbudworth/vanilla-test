@@ -38,15 +38,15 @@ public class VanillaObservers implements Observers {
         idx++;
         if (idx >= observers.length)
             idx = 0;
-        for (int i = 0; i < observers.length; i++) {
-            int i2 = i + idx;
-            if (i2 >= observers.length) i2 -= observers.length;
-            Observer observer = observers[i2];
-            observer.update(observable, arg);
 
-            if (i == 0)
-                ++first[i2];
-            ++total[i2];
+        ++first[idx];
+        for (int i = idx; i < observers.length; i++) {
+            observers[i].update(observable, arg);
+            ++total[i];
+        }
+        for (int i = 0; i < idx; i++) {
+            observers[i].update(observable, arg);
+            ++total[i];
         }
     }
 
