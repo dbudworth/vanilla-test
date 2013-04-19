@@ -7,10 +7,14 @@ import java.util.Observer;
  */
 public class TestIterations {
     static final int OBSERVER_COUNT = 10;
+
     public static void main(String... ignored) {
-        runIterations(new ArraySynchronized(OBSERVER_COUNT));
-        runIterations(new CasCalls(OBSERVER_COUNT));
-        runIterations(new ArrayLocked(OBSERVER_COUNT));
+        for (int i = 0; i < 3; i++) {
+            runIterations(new ArraySynchronized(OBSERVER_COUNT));
+            runIterations(new CasCalls(OBSERVER_COUNT));
+            runIterations(new ArrayLocked(OBSERVER_COUNT));
+            runIterations(new VanillaObservers(OBSERVER_COUNT));
+        }
     }
 
     public static void runIterations(Observers observers) {
@@ -18,22 +22,20 @@ public class TestIterations {
             observers.add(new MyObserver());
 
 
-        long duration=0;
         long before = memoryUsed();
-        for (int i = 0; i < 100; i++) {
-            long start = System.nanoTime();
+        int repeats = 10000000;
+        long start = System.nanoTime();
+        for (int i = 0; i < repeats; i++) {
             callObservers(observers);
-            long end = System.nanoTime();
-            duration = end - start;
         }
+        long duration = System.nanoTime() - start;
         long size = memoryUsed() - before;
-        System.out.printf("10000x100 Iterations used %,d bytes, last 10k %,d ns%n\t%s%n", size, duration, observers);
+        System.out.printf("%d Iterations used %,d bytes, took %,d ns per loop%n\t%s%n",
+                repeats, size, duration / repeats, observers);
     }
 
     private static void callObservers(Observers observers) {
-        for (int j = 0; j < 10000; j++) {
-            observers.call(null, null);
-        }
+        observers.call(null, null);
     }
 
     static int counter = 0;
