@@ -29,15 +29,21 @@ class CasCalls implements Observers {
 
     @Override
     public void call(Observable observable, Object arg) {
-        idx++;
-        for (int x = 0; x < observers.length; x++) {
-            int use = (idx + x) % observers.length;
-            if (x == 0)
-                ++first[use];
-            ++total[use];
-            Observer o = (Observer) observers[use].get();
+        if (++idx >= observers.length)
+            idx=0;
+        ++first[idx];
+        for (int x=idx;x<observers.length;x++){
+            ++total[x];
+            Observer o = (Observer) observers[x].get();
             if (o != null)
                 o.update(observable, arg);
+        }
+        for (int x=0;x<idx;x++){
+            ++total[x];
+            Observer o = (Observer) observers[x].get();
+            if (o != null)
+                o.update(observable, arg);
+
         }
     }
 
