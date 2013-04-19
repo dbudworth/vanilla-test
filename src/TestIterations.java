@@ -27,7 +27,7 @@ public class TestIterations {
             duration = end - start;
         }
         long size = memoryUsed() - before;
-        System.out.printf("10000x100 Iterations used %,d bytes, last 10k %,d ns%n", size, duration);
+        System.out.printf("10000x100 Iterations used %,d bytes, last 10k %,d ns%n\t%s%n", size, duration, observers);
     }
 
     private static void callObservers(Observers observers) {
